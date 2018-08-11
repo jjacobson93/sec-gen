@@ -36,9 +36,6 @@ configure_cargo() {
     x86_64-pc-windows-gnu)
       prefix=x86_64-w64-mingw32
       ;;
-    x86_64-apple-darwin)
-      prefix=x86_64-apple-darwin15
-      ;;
     *)
       return
       ;;
@@ -55,7 +52,11 @@ EOF
 
 build_cargo_project() {
   cargo build --release --target $TARGET
-  mv target/$TARGET/release/sec-gen binaries/sec-gen-$TARGET
+  OUTPUT_FILE=target/$TARGET/release/sec-gen
+  if [ "$TARGET" = 'x86_64-pc-windows-gnu' ]; then
+    OUTPUT_FILE="$OUTPUT_FILE.exe"
+  fi
+  mv "$OUTPUT_FILE" binaries/sec-gen-$TARGET
   md5sum binaries/sec-gen-$TARGET > binaries/sec-gen-$TARGET.md5
   sha256sum binaries/sec-gen-$TARGET > binaries/sec-gen-$TARGET.sha256
 }
