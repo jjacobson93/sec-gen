@@ -20,6 +20,7 @@ main() {
   if [ "$TARGET" = 'x86_64-pc-windows-gnu' ]; then
     OUTPUT_FILE="$OUTPUT_FILE.exe"
   fi
+  mkdir -p binaries
   mv "$OUTPUT_FILE" binaries/sec-gen-$TARGET
   $MD5 binaries/sec-gen-$TARGET > binaries/sec-gen-$TARGET.md5
   $SHA256 binaries/sec-gen-$TARGET > binaries/sec-gen-$TARGET.sha256
