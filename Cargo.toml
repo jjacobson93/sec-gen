@@ -1,0 +1,10 @@
+[package]
+name = "sec-gen"
+version = "0.0.1"
+authors = ["Jeremy Jacobson <jjacobson93@gmail.com>"]
+
+[dependencies]
+
+[[bin]]
+name = "sec-gen"
+path = "src/main.rs"

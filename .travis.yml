@@ -1,0 +1,64 @@
+language: rust
+rust:
+  - stable
+matrix:
+  include:
+    # Note: apt packages are the C cross compiler and the cross compiled C library
+    - env: TARGET=aarch64-unknown-linux-gnu
+      dist: trusty
+      sudo: required
+    - env: TARGET=arm-unknown-linux-gnueabi
+      addons:
+        apt:
+          packages:
+            - gcc-arm-linux-gnueabi
+            - libc6-armel-cross
+            - libc6-dev-armel-cross
+    - env: TARGET=arm-unknown-linux-gnueabihf
+      addons:
+        apt:
+          packages: &armhf
+            - gcc-arm-linux-gnueabihf
+            - libc6-armhf-cross
+            - libc6-dev-armhf-cross
+    - env: TARGET=armv7-unknown-linux-gnueabihf
+      addons:
+        apt:
+          packages: *armhf
+    - env: TARGET=i686-unknown-linux-musl
+      addons:
+        apt:
+          packages: &i686
+            - gcc-multilib
+    - env: TARGET=i686-unknown-linux-gnu
+      addons:
+        apt:
+          packages: *i686
+    - env: TARGET=mipsel-unknown-linux-musl
+    - env: TARGET=x86_64-unknown-linux-musl
+    - env: TARGET=x86_64-pc-windows-gnu
+      dist: trusty
+      sudo: required
+      addons:
+        apt:
+          packages:
+            - gcc-mingw-w64
+    - env: TARGET=x86_64-apple-darwin
+      os: osx
+      sudo: required
+
+install:
+  - export PATH="$PATH:$HOME/.cargo/bin"
+  - export STAGING_DIR="$HOME/openwrt"
+  - export MACOS_SDK_DIR="$HOME/macos-sdk"
+  - bash ci/install.sh
+  - export PATH="$PATH:$(find $STAGING_DIR -maxdepth 1 -name 'toolchain*' -print -quit)/bin:$MACOS_SDK_DIR/bin"
+  - export PKG_CONFIG_ALLOW_CROSS=1
+
+script:
+  - bash ci/script.sh
+
+branches:
+  only:
+    - auto
+    - master
