@@ -9,7 +9,12 @@ main() {
 }
 
 install_standard_crates() {
-  rustup target add $TARGET
+  INSTALLED=$(rustup target list | grep "$TARGET installed\|default")
+  if [ -z "$INSTALLED" ]; then
+    rustup target add $TARGET
+  else
+    echo "$TARGET already installed."
+  fi
 }
 
 configure_cargo() {
