@@ -33,6 +33,7 @@ configure_cargo() {
       ;;
     x86_64-apple-darwin)
       prefix=x86_64-apple-darwin15
+      ;;
     *)
       return
       ;;
