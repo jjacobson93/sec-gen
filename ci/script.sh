@@ -5,7 +5,7 @@ set -ex
 main() {
   install_standard_crates
   configure_cargo
-  # build_cargo_project
+  build_cargo_project
 }
 
 install_standard_crates() {
