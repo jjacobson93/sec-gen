@@ -59,12 +59,12 @@ script:
 deploy:
   provider: releases
   api_key:
-    secure: YOUR_API_KEY_ENCRYPTED
+    secure: 2ClmtkhNssFu9iwOceAuA2muchbqE3vou26EHtgqPlZwjHhLbxZJU7GUQPEyZOpOr3ao1a1kfIjDFTWUNDd+aHcV6Uf3VYbyXI3ijxqTZlJ51TlCXYCjZoIDrul7KnThpPLHLPdtlYUNp4Rq7e+tCajr+gkLDhdkNPXJmH+OVaXG2pYpm8DsNpt4X6LXj9cL70Zbazo1ATK60umz5BnF8jS4zAWAZy9F8ENUxJBSxmOuud/bB1UQ1LOWtRMR+EnnOaeJkJ4d25+f6MEAcTy4q/09dHYTa9h+kT7jN8IxBQv90UEjSgcJgxxwGA/qWc4dK0AIuKG5qOv0GJFvvJpYJSf/CpyjTrMggMFDwC0+qkTAmh8RLR3/tpVfkvLKcxNz0WAdD5Ee7dI7cQxVSypBL9CIZE5Y/lT9QRmlpAA591eBPFfy05HuvFYATgOwsPrjSpKdq7/MySTYXVNEQ5nKHv/gHOBkpdOpgfN3kRiIeUrEnpOOUjwAQjahUiosr5IzdxAjV0ocLaCkpell/Z84woZN0Kju/2LNfFLVsbHTGtnaGyY/D+3FXKV+ZM+y6cjOJuiLCvQX2tLTfdZKs0iQGsWE9bBUrk03Y8ZlfkSrcx0D+zjMPpFoAE+Mt210yuRrYUBmr78Wd124ioB1URu7U/1vGi0KkHYhTGT9fqnLYh4=
   file_glob: true
   file: binaries/*
-  skip_cleanup: true
   on:
     tags: true
+    repo: jjacobson93/sec-gen
 
 branches:
   only:
