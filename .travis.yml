@@ -47,12 +47,24 @@ matrix:
       sudo: required
 
 install:
+  - export OUTDIR=binaries
+  - mkdir -p "$OUTDIR"
   - export PATH="$PATH:$HOME/.cargo/bin"
   - bash ci/install.sh
   - export PKG_CONFIG_ALLOW_CROSS=1
 
 script:
   - bash ci/script.sh
+
+deploy:
+  provider: releases
+  api_key:
+    secure: YOUR_API_KEY_ENCRYPTED
+  file_glob: true
+  file: binaries/*
+  skip_cleanup: true
+  on:
+    tags: true
 
 branches:
   only:
