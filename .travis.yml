@@ -35,6 +35,7 @@ matrix:
         apt:
           packages: *i686
     - env: TARGET=x86_64-unknown-linux-musl
+    - env: TARGET=x86_64-unknown-linux-gnu
     - env: TARGET=x86_64-pc-windows-gnu
       dist: trusty
       sudo: required
