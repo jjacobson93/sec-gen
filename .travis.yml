@@ -1,61 +1,76 @@
+dist: trusty
 language: rust
-rust:
-  - stable
+services: docker
+sudo: required
+
+env:
+  global:
+    - CRATE_NAME=sec-gen
+
 matrix:
   include:
-    # Note: apt packages are the C cross compiler and the cross compiled C library
+    # Android
+    - env: TARGET=aarch64-linux-android
+    - env: TARGET=arm-linux-androideabi
+    - env: TARGET=armv7-linux-androideabi
+    - env: TARGET=i686-linux-android
+    - env: TARGET=x86_64-linux-android
+
+    # iOS
+    - env: TARGET=aarch64-apple-ios
+      os: osx
+    - env: TARGET=armv7-apple-ios
+      os: osx
+    - env: TARGET=armv7s-apple-ios
+      os: osx
+    - env: TARGET=i386-apple-ios
+      os: osx
+    - env: TARGET=x86_64-apple-ios
+      os: osx
+
+    # Linux
     - env: TARGET=aarch64-unknown-linux-gnu
-      dist: trusty
-      sudo: required
     - env: TARGET=arm-unknown-linux-gnueabi
-      addons:
-        apt:
-          packages:
-            - gcc-arm-linux-gnueabi
-            - libc6-armel-cross
-            - libc6-dev-armel-cross
-    - env: TARGET=arm-unknown-linux-gnueabihf
-      addons:
-        apt:
-          packages: &armhf
-            - gcc-arm-linux-gnueabihf
-            - libc6-armhf-cross
-            - libc6-dev-armhf-cross
     - env: TARGET=armv7-unknown-linux-gnueabihf
-      addons:
-        apt:
-          packages: *armhf
-    - env: TARGET=i686-unknown-linux-musl
-      addons:
-        apt:
-          packages: &i686
-            - gcc-multilib
     - env: TARGET=i686-unknown-linux-gnu
-      addons:
-        apt:
-          packages: *i686
-    - env: TARGET=x86_64-unknown-linux-musl
+    - env: TARGET=i686-unknown-linux-musl
+    - env: TARGET=mips-unknown-linux-gnu
+    - env: TARGET=mips64-unknown-linux-gnuabi64
+    - env: TARGET=mips64el-unknown-linux-gnuabi64
+    - env: TARGET=mipsel-unknown-linux-gnu
+    - env: TARGET=powerpc-unknown-linux-gnu
+    - env: TARGET=powerpc64-unknown-linux-gnu
+    - env: TARGET=powerpc64le-unknown-linux-gnu
+    - env: TARGET=s390x-unknown-linux-gnu
     - env: TARGET=x86_64-unknown-linux-gnu
-    - env: TARGET=x86_64-pc-windows-gnu
-      dist: trusty
-      sudo: required
-      addons:
-        apt:
-          packages:
-            - gcc-mingw-w64
+    - env: TARGET=x86_64-unknown-linux-musl
+
+    # OSX
+    - env: TARGET=i686-apple-darwin
+      os: osx
     - env: TARGET=x86_64-apple-darwin
       os: osx
-      sudo: required
+
+    # *BSD
+    - env: TARGET=i686-unknown-freebsd
+    - env: TARGET=x86_64-unknown-freebsd
+    - env: TARGET=x86_64-unknown-netbsd
+
+    # Windows
+    - env: TARGET=x86_64-pc-windows-gnu
+
+before_install:
+  - set -e
+  - rustup self update
 
 install:
-  - export OUTDIR=binaries
-  - mkdir -p "$OUTDIR"
-  - export PATH="$PATH:$HOME/.cargo/bin"
-  - bash ci/install.sh
-  - export PKG_CONFIG_ALLOW_CROSS=1
+  - sh ci/install.sh
+  - source ~/.cargo/env || true
 
 script:
   - bash ci/script.sh
+
+after_script: set +e
 
 deploy:
   provider: releases
@@ -63,9 +78,15 @@ deploy:
     secure: 2ClmtkhNssFu9iwOceAuA2muchbqE3vou26EHtgqPlZwjHhLbxZJU7GUQPEyZOpOr3ao1a1kfIjDFTWUNDd+aHcV6Uf3VYbyXI3ijxqTZlJ51TlCXYCjZoIDrul7KnThpPLHLPdtlYUNp4Rq7e+tCajr+gkLDhdkNPXJmH+OVaXG2pYpm8DsNpt4X6LXj9cL70Zbazo1ATK60umz5BnF8jS4zAWAZy9F8ENUxJBSxmOuud/bB1UQ1LOWtRMR+EnnOaeJkJ4d25+f6MEAcTy4q/09dHYTa9h+kT7jN8IxBQv90UEjSgcJgxxwGA/qWc4dK0AIuKG5qOv0GJFvvJpYJSf/CpyjTrMggMFDwC0+qkTAmh8RLR3/tpVfkvLKcxNz0WAdD5Ee7dI7cQxVSypBL9CIZE5Y/lT9QRmlpAA591eBPFfy05HuvFYATgOwsPrjSpKdq7/MySTYXVNEQ5nKHv/gHOBkpdOpgfN3kRiIeUrEnpOOUjwAQjahUiosr5IzdxAjV0ocLaCkpell/Z84woZN0Kju/2LNfFLVsbHTGtnaGyY/D+3FXKV+ZM+y6cjOJuiLCvQX2tLTfdZKs0iQGsWE9bBUrk03Y8ZlfkSrcx0D+zjMPpFoAE+Mt210yuRrYUBmr78Wd124ioB1URu7U/1vGi0KkHYhTGT9fqnLYh4=
   file_glob: true
   file: binaries/*
+  skip_cleanup: true
   on:
     tags: true
     repo: jjacobson93/sec-gen
+
+cache: cargo
+before_cache:
+  # Travis can't cache files that are not readable by "others"
+  - chmod -R a+r $HOME/.cargo
 
 branches:
   only:

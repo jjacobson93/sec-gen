@@ -1,64 +1,28 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 set -ex
 
+if [ ! "$(command -v md5sum)" ]; then
+  MD5=md5
+else
+  MD5=md5sum
+fi
+
+if [ ! "$(command -v sha256sum)" ]; then
+  SHA256=shasum -a 256
+else
+  SHA256=sha256sum
+fi
+
 main() {
-  install_standard_crates
-  configure_cargo
-  build_cargo_project
-}
-
-install_standard_crates() {
-  INSTALLED=$(rustup target list | grep -e "$TARGET\s*(\(installed\|default\))" || true)
-  if [ -z "$INSTALLED" ]; then
-    rustup target add $TARGET
-  else
-    echo "$TARGET already installed."
-  fi
-}
-
-configure_cargo() {
-  local prefix
-
-  case "$TARGET" in
-    aarch64-unknown-linux-gnu)
-      prefix=aarch64-linux-gnu
-      ;;
-    arm*-unknown-linux-gnueabihf)
-      prefix=arm-linux-gnueabihf
-      ;;
-    arm-unknown-linux-gnueabi)
-      prefix=arm-linux-gnueabi
-      ;;
-    mipsel-unknown-linux-musl)
-      prefix=mipsel-openwrt-linux
-      ;;
-    x86_64-pc-windows-gnu)
-      prefix=x86_64-w64-mingw32
-      ;;
-    *)
-      return
-      ;;
-  esac
-
-  mkdir -p ~/.cargo
-
-  cat >>~/.cargo/config <<EOF
-[target.$TARGET]
-linker = "$prefix-gcc"
-ar = "$prefix-ar"
-EOF
-}
-
-build_cargo_project() {
-  cargo build --release --target $TARGET
+  cross build --target $TARGET --release
   OUTPUT_FILE=target/$TARGET/release/sec-gen
   if [ "$TARGET" = 'x86_64-pc-windows-gnu' ]; then
     OUTPUT_FILE="$OUTPUT_FILE.exe"
   fi
   mv "$OUTPUT_FILE" binaries/sec-gen-$TARGET
-  md5sum binaries/sec-gen-$TARGET > binaries/sec-gen-$TARGET.md5
-  sha256sum binaries/sec-gen-$TARGET > binaries/sec-gen-$TARGET.sha256
+  $MD5 binaries/sec-gen-$TARGET > binaries/sec-gen-$TARGET.md5
+  $SHA256 binaries/sec-gen-$TARGET > binaries/sec-gen-$TARGET.sha256
 }
 
 main
