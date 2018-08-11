@@ -51,7 +51,6 @@ install_macos_sdk() {
 
 main() {
   install_c_toolchain
-  # install_rustup
   if [ "$TARGET" = "mipsel-unknown-linux-musl" ]; then
     install_openwrt_sdk
   fi

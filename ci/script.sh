@@ -50,7 +50,7 @@ EOF
 
 build_cargo_project() {
   cargo build --release --target $TARGET
-  mv target/$TARGET/sec-gen binaries/sec-gen-$TARGET
+  mv target/$TARGET/release/sec-gen binaries/sec-gen-$TARGET
   md5sum binaries/sec-gen-$TARGET > binaries/sec-gen-$TARGET.md5
   sha256sum binaries/sec-gen-$TARGET > binaries/sec-gen-$TARGET.sha256
 }

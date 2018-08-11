@@ -34,7 +34,6 @@ matrix:
       addons:
         apt:
           packages: *i686
-    - env: TARGET=mipsel-unknown-linux-musl
     - env: TARGET=x86_64-unknown-linux-musl
     - env: TARGET=x86_64-pc-windows-gnu
       dist: trusty
@@ -49,10 +48,7 @@ matrix:
 
 install:
   - export PATH="$PATH:$HOME/.cargo/bin"
-  # - export STAGING_DIR="$HOME/openwrt"
-  - export MACOS_SDK_DIR="$HOME/macos-sdk"
   - bash ci/install.sh
-  # - export PATH="$PATH:$(find $STAGING_DIR -maxdepth 1 -name 'toolchain*' -print -quit)/bin:$MACOS_SDK_DIR/bin"
   - export PKG_CONFIG_ALLOW_CROSS=1
 
 script:
