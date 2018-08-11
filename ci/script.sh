@@ -5,11 +5,11 @@ set -ex
 main() {
   install_standard_crates
   configure_cargo
-  build_cargo_project
+  # build_cargo_project
 }
 
 install_standard_crates() {
-  INSTALLED=$(rustup target list | grep -e "$TARGET\s*(\(installed\|default\))")
+  INSTALLED=$(rustup target list | grep -e "$TARGET\s*(\(installed\|default\))" || true)
   if [ -z "$INSTALLED" ]; then
     rustup target add $TARGET
   else
