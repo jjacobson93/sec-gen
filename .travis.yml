@@ -71,3 +71,4 @@ branches:
   only:
     - auto
     - master
+    - /^\d+\.\d+(\.\d+)?(-\S*)?$/
