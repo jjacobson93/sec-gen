@@ -9,7 +9,7 @@ else
 fi
 
 if [ ! "$(command -v sha256sum)" ]; then
-  SHA256=shasum -a 256
+  SHA256="shasum -a 256"
 else
   SHA256=sha256sum
 fi
