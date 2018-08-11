@@ -9,7 +9,7 @@ main() {
 }
 
 install_standard_crates() {
-  INSTALLED=$(rustup target list | grep "$TARGET installed\|default")
+  INSTALLED=$(rustup target list | grep -e "$TARGET\s*(\(installed\|default\))")
   if [ -z "$INSTALLED" ]; then
     rustup target add $TARGET
   else
